@@ -1,13 +1,15 @@
 package org.merkulov.payload.DTO;
-
-import lombok.Data;
+import lombok.*;
 import org.merkulov.modell.entity.Post;
 import org.merkulov.modell.entity.User;
-
 import javax.validation.constraints.Email;
 
-@Data
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class CommentDTO {
+
     private Long id;
 
     private String name;
@@ -17,5 +19,8 @@ public class CommentDTO {
     private String body;
 
     private Post post;
+
     private User user;
+
+
 }

@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
 public class SecurityServiceimpl implements SecurityService {
 
 
-    private final AuthenticationManager authenticationManager;
+  /*  private final AuthenticationManager authenticationManager;
 
     private final UserDetailsService userDetailsService;
 
@@ -49,5 +49,5 @@ public class SecurityServiceimpl implements SecurityService {
 
            log.debug("Successfully {} auto logged in", username);
         }
-    }
+    }*/
 }

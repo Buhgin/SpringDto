@@ -2,7 +2,7 @@ spring:
   liquibase:
     enabled: false
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
+    url: jdbc:postgresql://localhost:5432/SpringDTO
     username: postgres
     password: Duotestis1
   jpa:
@@ -12,3 +12,7 @@ spring:
         show-sql: true
         hbm2ddl:
           auto:
+
+app:
+ jwt-secret: 7287b08f9ae61edbe0335bcec3d610881bce64021915be3d9d4aa905e98e2e47
+ jwt-expiration-millseconds: 1840860000

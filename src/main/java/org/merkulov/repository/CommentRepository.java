@@ -12,5 +12,6 @@ import java.util.List;
 public interface CommentRepository extends JpaRepository<Comment,Long> {
     List<Comment> findByPostId(Long postId);
     Page<Comment> findByPostId(Long postId, Pageable pageable);
+    Page<Comment> findByUserId(Long userId,Pageable pageable);
 
 }

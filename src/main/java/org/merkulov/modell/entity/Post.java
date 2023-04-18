@@ -1,18 +1,17 @@
 package org.merkulov.modell.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.Hibernate;
 
-import java.util.HashSet;
+
 import java.util.Objects;
-import java.util.Set;
+
 
 
 @Setter
+@Getter
 @ToString
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -27,12 +26,13 @@ public class Post {
     private String description;
     @Column(name = "content", nullable = false)
     private String content;
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    @ToString.Exclude
-    private Set<Comment> comments = new HashSet<>();
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="user_id")
     private User user;
+ /*   @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    private Set<Comment> comments = new HashSet<>();*/
+
 
     @Override
     public boolean equals(Object o) {
@@ -47,23 +47,5 @@ public class Post {
         return getClass().hashCode();
     }
 
-    public Long getId() {
-        return id;
-    }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getContent() {
-        return content;
-    }
-     @JsonManagedReference
-    public Set<Comment> getComments() {
-        return comments;
-    }
 }

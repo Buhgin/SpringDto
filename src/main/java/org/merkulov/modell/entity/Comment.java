@@ -11,6 +11,7 @@ import java.util.Objects;
 
 
 @Setter
+@Getter
 @ToString
 //@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @AllArgsConstructor
@@ -36,6 +37,7 @@ public class Comment {
     @JoinColumn(name="user_id")
     private User user;
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -49,23 +51,7 @@ public class Comment {
         return getClass().hashCode();
     }
 
-    public Long getId() {
-        return id;
-    }
 
-    public String getName() {
-        return name;
-    }
 
-    public String getEmail() {
-        return email;
-    }
 
-    public String getBody() {
-        return body;
-    }
-    @JsonBackReference
-    public Post getPost() {
-        return post;
-    }
 }

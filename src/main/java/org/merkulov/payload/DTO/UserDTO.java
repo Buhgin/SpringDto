@@ -1,25 +1,30 @@
 package org.merkulov.payload.DTO;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.merkulov.modell.entity.Comment;
 import org.merkulov.modell.entity.Post;
 import org.merkulov.modell.entity.Role;
 
-import java.util.HashSet;
+
 import java.util.List;
 import java.util.Set;
-@Data
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserDTO {
-    private Long id;
-    private String login;
+    private  Long id;
+    private String name;
+    private String username;
+    private String email;
     private String password;
-    private Set<Role> roles = new HashSet<>();
-    private Set<Post> posts = new HashSet<>();
+    private String role;
 
-    private List<Comment> comments;
-
+    private Set<String> setRole ;
 }

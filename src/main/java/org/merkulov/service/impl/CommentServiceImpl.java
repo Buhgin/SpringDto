@@ -5,10 +5,12 @@ import org.merkulov.exception.BlogApiException;
 import org.merkulov.modell.entity.Comment;
 import org.merkulov.modell.entity.Post;
 import org.merkulov.exception.ResourceNotFoundException;
+import org.merkulov.modell.entity.User;
 import org.merkulov.payload.DTO.CommentDTO;
 import org.merkulov.payload.response.CommentResponse;
 import org.merkulov.repository.CommentRepository;
 import org.merkulov.repository.PostRepository;
+import org.merkulov.repository.UserRepository;
 import org.merkulov.service.CommentService;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -26,29 +28,25 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
     private final ModelMapper modelMapper;
+    private final UserRepository userRepository;
 
     @Override
-    public CommentDTO createComment(CommentDTO commentDTO, Long postId) {
+    public CommentDTO createComment(CommentDTO commentDTO, Long postId,Long userId) {
         Post post = postRepository.findById(postId).orElseThrow(() ->
                 new ResourceNotFoundException("Post", "id", postId));
+        User user = userRepository.findById(userId).orElseThrow(()->
+                new ResourceNotFoundException("User","id",userId));
         Comment comment = mapToEntity(commentDTO);
         comment.setPost(post);
+        comment.setUser(user);
         Comment newComment = commentRepository.save(comment);
         return mapToDTO(newComment);
     }
 
     @Override
-    public CommentDTO updateComment(Long postId,Long commentId,CommentDTO commentDTO) {
+    public CommentDTO updateComment(Long commentId,CommentDTO commentDTO)  {
         Comment comment = commentRepository.findById(commentId).orElseThrow(() ->
                 new ResourceNotFoundException("Comment", "id", commentId));
-        Post post = postRepository.findById(postId).orElseThrow(() ->
-                new ResourceNotFoundException("Post", "id", postId));
-
-      if (!comment.getPost().getId().equals(post.getId())) {
-        System.out.printf("comment postID %d,    postId %d",comment.getPost().getId(),post.getId());
-           throw new BlogApiException(HttpStatus.BAD_REQUEST, "Comment does not belong to the post");
-        }
-        comment.setPost(post);
         comment.setBody(commentDTO.getBody());
         comment.setName(commentDTO.getName());
         comment.setEmail(commentDTO.getEmail());
@@ -91,9 +89,24 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public CommentResponse getCommentByPostId(Long postId, Long commentId) {
+    public CommentResponse getCommentByUserid(Long userId, int pageNo, int pageSize, String sortBy, String sortDir) {
+          User user = userRepository.findById(userId).orElseThrow(()->
+                  new ResourceNotFoundException("User","id",userId));
+          user.setPassword("xxxxxxx");
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())?Sort.by(sortBy).ascending(): Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(pageNo,pageSize,sort);
+        Page<Comment> comments =  commentRepository.findByUserId(user.getId(),pageable);
+        List<Comment> commentList = comments.getContent();
+        CommentResponse commentResponse = new CommentResponse();
+        List<CommentDTO> listDto = commentList.stream().map(this::mapToDTO).toList();
+        commentResponse.setContent(listDto);
+        commentResponse.setPageNo(comments.getNumber());
+        commentResponse.setPageSize(comments.getSize());
+        commentResponse.setTotalElements(comments.getTotalElements());
+        commentResponse.setTotalPages(comments.getTotalPages());
+        commentResponse.setLast(comments.isLast());
 
-        return null;
+        return commentResponse;
     }
 
 

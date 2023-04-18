@@ -1,4 +1,5 @@
 package org.merkulov.controller;
+
 import lombok.*;
 import org.merkulov.payload.DTO.CommentDTO;
 import org.merkulov.payload.response.CommentResponse;
@@ -16,12 +17,12 @@ import javax.validation.Valid;
 public class CommentController {
     private final CommentService commentService;
 
-    @PostMapping("/posts/{postId}/comments")
-    public ResponseEntity<CommentDTO> createCommentDTO( @PathVariable(value = "postId") Long postId,
-                                                        @Valid
-                                                       @RequestBody CommentDTO commentDTO) {
+    @PostMapping("/posts/{postId}/comments/users{userId}")
+    public ResponseEntity<CommentDTO> createCommentDTO(@PathVariable(value = "postId") Long postId
+            , @PathVariable(value = "userId") Long userId
+            , @Valid @RequestBody CommentDTO commentDTO) {
 
-        CommentDTO commentDTOcreate = commentService.createComment(commentDTO, postId);
+        CommentDTO commentDTOcreate = commentService.createComment(commentDTO, postId, userId);
 
         return new ResponseEntity<>(commentDTOcreate, HttpStatus.CREATED);
     }
@@ -29,10 +30,10 @@ public class CommentController {
     @PutMapping("/posts/{postId}/comments/{commentId}")
 
     public ResponseEntity<CommentDTO> updateCommentDTO(@PathVariable(value = "commentId") Long commentId,
-                                                       @PathVariable(value = "postId") Long postId,
-            @Valid @RequestBody CommentDTO commentDTO) {
 
-        CommentDTO commentResponse = commentService.updateComment(postId,commentId,commentDTO);
+                                                       @Valid @RequestBody CommentDTO commentDTO) {
+
+        CommentDTO commentResponse = commentService.updateComment(commentId, commentDTO);
         return new ResponseEntity<>(commentResponse, HttpStatus.OK);
     }
 
@@ -51,5 +52,18 @@ public class CommentController {
 
         return commentService.getCommentsByPostId(postId, pageNo, pageSize, sortBy, sortDir);
     }
+
+    @GetMapping("/user/{userId}/comments")
+    public CommentResponse getAllByPageUserID(@PathVariable(name = "userId") Long userId,
+                                              @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+                                              @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
+                                              @RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy,
+                                              @RequestParam(value = "sortDir", defaultValue = "asc", required = false) String sortDir) {
+
+
+        return commentService.getCommentByUserid(userId, pageNo, pageSize, sortBy, sortDir);
+    }
+
+
 }
 

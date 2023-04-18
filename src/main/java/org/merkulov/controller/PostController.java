@@ -17,15 +17,16 @@ import javax.validation.Valid;
 public class PostController {
     private final PostService postService;
 
-    @PostMapping//("users/{id}")
-    public ResponseEntity<PostDTO> createPost(//@PathVariable(value = "userId") Long postId,
+    @PostMapping("users/{userId}")
+    public ResponseEntity<PostDTO> createPost(@PathVariable(value = "userId") Long userId,
                                               @Valid @RequestBody PostDTO postDto) {
-        PostDTO post = postService.createPost(postDto);
+        PostDTO post = postService.createPost(postDto,userId);
 
         return new ResponseEntity<>(post, HttpStatus.CREATED);
     }
 
     @GetMapping()
+
     public PostResponse findAll(@Valid
             @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
             @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
@@ -34,10 +35,21 @@ public class PostController {
     ) {
         return postService.getAllPosts(pageNo, pageSize, sortBy, sortDir);
     }
+    @GetMapping(("users/{userId}/posts"))
+    public PostResponse findPostUserID(@Valid @PathVariable(value ="userId") Long useId,
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
+            @RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy,
+            @RequestParam(value = "sortDir", defaultValue = "asc", required = false) String sortDir
+    ) {
+
+        return postService.getPostByUserId(useId,pageNo, pageSize, sortBy, sortDir);
+    }
 
     @GetMapping("{id}")
-   @PreAuthorize("hasRole('ADMIN')")
+      @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<PostDTO> findId(@Valid @PathVariable Long id) {
+
         PostDTO postDTO = postService.getPostById(id);
         return new ResponseEntity<>(postDTO, HttpStatus.OK);
     }
